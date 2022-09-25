@@ -45,6 +45,7 @@
             this.tabPageAnims = new TriggerIndexParamTool.RuleCategoryTabPage();
             this.buttonSaveLog = new System.Windows.Forms.Button();
             this.buttonCopyToClipboard = new System.Windows.Forms.Button();
+            this.buttonScanMaps = new System.Windows.Forms.Button();
             this.tabControl.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -90,6 +91,17 @@
             this.buttonProcessMaps.Text = "Process Maps";
             this.buttonProcessMaps.UseVisualStyleBackColor = true;
             this.buttonProcessMaps.Click += new System.EventHandler(this.ButtonProcessMaps_Click);
+            // 
+            // buttonScanMaps
+            // 
+            this.buttonScanMaps.Enabled = false;
+            this.buttonScanMaps.Location = new System.Drawing.Point(241, 445);
+            this.buttonScanMaps.Name = "buttonScanMaps";
+            this.buttonScanMaps.Size = new System.Drawing.Size(84, 23);
+            this.buttonScanMaps.TabIndex = 6;
+            this.buttonScanMaps.Text = "Scan Maps";
+            this.buttonScanMaps.UseVisualStyleBackColor = true;
+            this.buttonScanMaps.Click += new System.EventHandler(this.ButtonScanMaps_Click);
             // 
             // buttonRemoveMaps
             // 
@@ -259,6 +271,7 @@
             this.Controls.Add(this.rtbLog);
             this.Controls.Add(this.buttonAddMaps);
             this.Controls.Add(this.buttonRemoveMaps);
+            this.Controls.Add(this.buttonScanMaps);
             this.Controls.Add(this.buttonProcessMaps);
             this.Controls.Add(this.listBoxMaps);
             this.Controls.Add(this.buttonRemoveRule);
@@ -294,6 +307,7 @@
         private System.Windows.Forms.RichTextBox rtbLog;
         private System.Windows.Forms.Button buttonSaveLog;
         private System.Windows.Forms.Button buttonCopyToClipboard;
+        private System.Windows.Forms.Button buttonScanMaps;
     }
 }
 

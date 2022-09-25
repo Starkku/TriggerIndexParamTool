@@ -9,6 +9,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using Starkku.Utilities;
@@ -298,6 +299,144 @@ namespace TriggerIndexParamTool
             }
 
             return actionChanged;
+        }
+
+        public static void ScanMaps(IEnumerable<string> mapFilenames, RuleCategory category, int scanId)
+        {
+            if (category == RuleCategory.Invalid)
+                return;
+
+            foreach (string filename in mapFilenames)
+            {
+                if (!File.Exists(filename))
+                {
+                    Logger.Error("File '" + filename + "' does not exist.");
+                    continue;
+                }
+
+                INIFile map = new INIFile(filename);
+
+                Logger.Info("Scanning file '" + filename + "'.");
+
+                ScanEvents(map, category, scanId);
+                ScanActions(map, category, scanId);
+                ScanScripts(map, category, scanId);
+
+                Logger.Info("Finished scanning file '" + filename + "'.");
+            }
+        }
+
+        private static void ScanEvents(INIFile map, RuleCategory category, int scanId)
+        {
+            List<EventActionItem> events = GetEventActionItems(map, "Events");
+
+            if (events == null)
+                return;
+
+            ScanItems(events, category, scanId, EventParameterCollection.Parameters, "Event");
+        }
+
+        private static void ScanActions(INIFile map, RuleCategory category, int scanId)
+        {
+            List<EventActionItem> actions = GetEventActionItems(map, "Actions");
+
+            if (actions == null)
+                return;
+
+            ScanItems(actions, category, scanId, ActionParameterCollection.Parameters, "Action");
+        }
+
+        private static void ScanItems(List<EventActionItem> items, RuleCategory category, int scanId, Dictionary<RuleCategory, ParameterType[]> parameterCollection, string label)
+        {
+            ParameterType[] parameterTypes = parameterCollection[category];
+
+            foreach (ParameterType parameterType in parameterTypes)
+            {
+                var itemsMatch = items.Where(x => x.Members.Find(y => Conversion.GetIntFromString(y.ID, -1) == parameterType.ID) != null);
+
+                foreach (EventActionItem item in itemsMatch)
+                {
+                    int memberCounter = -1;
+
+                    foreach (EventAction itemMember in item.Members)
+                    {
+                        memberCounter++;
+                        if (Conversion.GetIntFromString(itemMember.ID, -1) != parameterType.ID)
+                            continue;
+
+                        EventActionParameter parameter = itemMember.Parameters[parameterType.ParamPosition];
+
+                        if (Conversion.GetIntFromString(parameter.ParameterValue, -1) == scanId)
+                        {
+                            Logger.Info("Trigger " + item.Key + ": " + label + " #" + memberCounter + " " +
+                                "(ID " + parameterType.ID + ") parameter #" + (parameterType.ParamPosition + 1) +
+                                " uses " + category.ToString() + " id " + scanId + ".");
+                        }
+                    }
+                }
+            }
+        }
+
+        private static void ScanScripts(INIFile map, RuleCategory category, int scanId)
+        {
+            if (category != RuleCategory.Houses && category != RuleCategory.Buildings)
+                return;
+
+            string[] scriptTypeKeys = map.GetValues("ScriptTypes");
+
+            if (scriptTypeKeys == null)
+                return;
+
+            foreach (string scriptTypeKey in scriptTypeKeys)
+            {
+                ScanScript(scriptTypeKey, map, category, scanId);
+            }
+        }
+
+        private static void ScanScript(string scriptTypeKey, INIFile map, RuleCategory category, int scanId)
+        {
+            for (int i = 0; i < 50; i++)
+            {
+                string key = i + "";
+                string action = map.GetKey(scriptTypeKey, key, null);
+
+                if (action == null)
+                    break;
+
+                string[] split = action.Split(',');
+
+                if (split.Length < 2)
+                {
+                    Logger.Warn("ScriptType [" + scriptTypeKey + "] key " + key + " contains less than two comma-separated values.");
+                    continue;
+                }
+
+                int actionID = Conversion.GetIntFromString(split[0], -1);
+                int actionParameter = Conversion.GetIntFromString(split[1], -1);
+
+                if (actionID == -1 || actionParameter == -1)
+                {
+                    Logger.Warn("ScriptType [" + scriptTypeKey + "] key " + key + " contains invalid action ID or parameter.");
+                    continue;
+                }
+
+                if (category == RuleCategory.Houses && HOUSE_SCRIPT_ACTIONS.Contains(actionID))
+                {
+                    if (actionParameter == scanId)
+                    {
+                        Logger.Info("Script " + scriptTypeKey + ": Action #" + key + " " +
+                                " uses " + category.ToString() + " id " + scanId + ".");
+                    }
+                }
+                else if (category == RuleCategory.Buildings && STRUCTURE_SCRIPT_ACTIONS.Contains(actionID))
+                {
+                    if (GetActualBuildingTypeIndex(actionParameter, out int flag) == scanId)
+                    {
+                        Logger.Info("Script " + scriptTypeKey + ": Action #" + key + " " +
+                                " uses " + category.ToString() + " id " + scanId + ".");
+                    }
+                }
+            }
         }
 
         private static int GetActualBuildingTypeIndex(int index, out int flag)

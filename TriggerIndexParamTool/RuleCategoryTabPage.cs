@@ -26,10 +26,13 @@ namespace TriggerIndexParamTool
         private NumericUpDown numEndIndex;
         private Label labelIncrement;
         private NumericUpDown numIncrement;
+        private Label labelScan;
+        private NumericUpDown numScan;
         private ListBox listBoxRules;
         private int startIndex = 0;
         private int endIndex = 0;
         private int increment = 0;
+        private int scan = 0;
 
         public RuleCategoryTabPage()
         {
@@ -38,6 +41,7 @@ namespace TriggerIndexParamTool
             numStartIndex.TextChanged += NumStartIndex_TextChanged;
             numEndIndex.TextChanged += NumEndIndex_TextChanged;
             numIncrement.TextChanged += NumIncrement_TextChanged;
+            numScan.TextChanged += NumScan_TextChanged;
         }
 
         public void AddListItem()
@@ -72,6 +76,11 @@ namespace TriggerIndexParamTool
             ValidateValues();
         }
 
+        public int GetScanId()
+        {
+            return scan;
+        }
+
         private void ValidateValues()
         {
             bool valid = true;
@@ -93,6 +102,11 @@ namespace TriggerIndexParamTool
             InputValidationAction(this, valid);
         }
 
+        private void NumScan_TextChanged(object sender, EventArgs e)
+        {
+            scan = (int)numScan.Value;
+        }
+        
         private void NumIncrement_TextChanged(object sender, EventArgs e)
         {
             increment = (int)numIncrement.Value;
@@ -126,6 +140,25 @@ namespace TriggerIndexParamTool
                 Size = new Size(197, 120),
                 TabIndex = 4,
                 SelectionMode = SelectionMode.MultiExtended
+            };
+
+            labelScan = new Label
+            {
+                Location = new Point(13, 112),
+                Name = "labelScan",
+                RightToLeft = RightToLeft.No,
+                Size = new Size(61, 18),
+                Text = "Scan:",
+                TextAlign = ContentAlignment.MiddleRight
+            };
+
+            numScan = new NumericUpDown
+            {
+                Location = new Point(80, 112),
+                Name = "tbScan",
+                Size = new Size(81, 20),
+                Maximum = short.MaxValue,
+                TabIndex = 3
             };
 
             labelIncrement = new Label
@@ -187,6 +220,8 @@ namespace TriggerIndexParamTool
             };
 
             Controls.Add(listBoxRules);
+            Controls.Add(labelScan);
+            Controls.Add(numScan);
             Controls.Add(labelIncrement);
             Controls.Add(numIncrement);
             Controls.Add(labelEndIndex);
