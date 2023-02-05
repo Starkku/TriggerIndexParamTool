@@ -374,7 +374,7 @@ namespace TriggerIndexParamTool
                         {
                             Logger.Info("Trigger " + item.Key + ": " + label + " #" + memberCounter + " " +
                                 "(ID " + parameterType.ID + ") parameter #" + (parameterType.ParamPosition + 1) +
-                                " uses " + category.ToString() + " id " + scanId + ".");
+                                " uses " + category.ToString() + " ID " + scanId + ".");
                         }
                     }
                 }
@@ -411,7 +411,7 @@ namespace TriggerIndexParamTool
 
                 if (split.Length < 2)
                 {
-                    Logger.Warn("ScriptType [" + scriptTypeKey + "] key " + key + " contains less than two comma-separated values.");
+                    Logger.Warn("ScriptType [" + scriptTypeKey + "] Action #" + key + " contains less than two comma-separated values.");
                     continue;
                 }
 
@@ -420,7 +420,7 @@ namespace TriggerIndexParamTool
 
                 if (actionID == -1 || actionParameter == -1)
                 {
-                    Logger.Warn("ScriptType [" + scriptTypeKey + "] key " + key + " contains invalid action ID or parameter.");
+                    Logger.Warn("ScriptType [" + scriptTypeKey + "] Action #" + key + " contains invalid action ID or parameter.");
                     continue;
                 }
 
@@ -429,7 +429,7 @@ namespace TriggerIndexParamTool
                     if (actionParameter == scanId)
                     {
                         Logger.Info("Script " + scriptTypeKey + ": Action #" + key + " " +
-                                " uses " + category.ToString() + " id " + scanId + ".");
+                                " uses " + category.ToString() + " ID " + scanId + ".");
                     }
                 }
                 else if (category == RuleCategory.Buildings && STRUCTURE_SCRIPT_ACTIONS.Contains(actionID))
@@ -437,7 +437,7 @@ namespace TriggerIndexParamTool
                     if (GetActualBuildingTypeIndex(actionParameter, out int flag) == scanId)
                     {
                         Logger.Info("Script " + scriptTypeKey + ": Action #" + key + " " +
-                                " uses " + category.ToString() + " id " + scanId + ".");
+                                " uses " + category.ToString() + " ID " + scanId + ".");
                     }
                 }
             }
