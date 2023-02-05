@@ -272,11 +272,13 @@ namespace TriggerIndexParamTool
 
                 foreach (Rule rule in rulesMatch)
                 {
-                    if (currentActionParameter >= rule.StartIndex || currentActionParameter <= rule.EndIndex)
+                    if (currentActionParameter >= rule.StartIndex && currentActionParameter <= rule.EndIndex)
                     {
+                        int originalParameter = currentActionParameter;
                         currentActionParameter += rule.Increment;
                         map.SetKey(scriptTypeKey, key, actionID + "," + currentActionParameter);
                         actionChanged = true;
+                        Logger.Info("ScriptType [" + scriptTypeKey + "] line " + key + " parameter changed from " + originalParameter + " to " + currentActionParameter + ".");
                     }
                 }
             }
@@ -288,11 +290,13 @@ namespace TriggerIndexParamTool
 
                 foreach (Rule rule in rulesMatch)
                 {
-                    if (currentActionParameter >= rule.StartIndex || currentActionParameter <= rule.EndIndex)
+                    if (currentActionParameter >= rule.StartIndex && currentActionParameter <= rule.EndIndex)
                     {
+                        int originalParameter = currentActionParameter;
                         currentActionParameter += rule.Increment;
                         map.SetKey(scriptTypeKey, key, actionID + "," + GetBuildingTypeIndex(currentActionParameter, flag));
                         actionChanged = true;
+                        Logger.Info("ScriptType [" + scriptTypeKey + "] line " + key + " parameter changed from " + originalParameter + " to " + currentActionParameter + ".");
                     }
                 }
             }
