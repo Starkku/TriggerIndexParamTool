@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Reflection;
 using Starkku.Utilities;
+using System.Data;
 
 namespace TriggerIndexParamTool
 {
@@ -89,6 +90,11 @@ namespace TriggerIndexParamTool
         private void ToggleProcessMapButton()
         {
             buttonProcessMaps.Enabled = mapFilenames.Count > 0 && GetRulesCount() > 0;
+        }
+
+        private void ToggleScanMapButton()
+        {
+            buttonScanMaps.Enabled = mapFilenames.Count > 0;
         }
 
         private void AddMapFilename(string filename)
@@ -181,6 +187,7 @@ namespace TriggerIndexParamTool
         private void MapFilenames_ListChanged(object sender, ListChangedEventArgs e)
         {
             ToggleProcessMapButton();
+            ToggleScanMapButton();
         }
 
         private void TabControl_SelectedIndexChanged(object sender, EventArgs e)
@@ -204,6 +211,26 @@ namespace TriggerIndexParamTool
             rtbLog.Clear();
             Logger.Initialize(Log);
             MapHandler.ProcessMaps(mapFilenames, rules);
+            lastLogFilename = baseLogFilename + "-" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".log";
+            ToggleUI(true);
+        }
+        private void ButtonScanMaps_Click(object sender, EventArgs e)
+        {
+            RuleCategory category = RuleCategory.Invalid;
+            int scanId = 0;
+            foreach (RuleCategoryTabPage page in tabControl.TabPages)
+            {
+                if (page == tabControl.SelectedTab)
+                {
+                    category = page.RuleCategory;
+                    scanId = page.GetScanId();
+                }
+            }
+
+            ToggleUI(false);
+            rtbLog.Clear();
+            Logger.Initialize(Log);
+            MapHandler.ScanMaps(mapFilenames, category, scanId);
             lastLogFilename = baseLogFilename + "-" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".log";
             ToggleUI(true);
         }
