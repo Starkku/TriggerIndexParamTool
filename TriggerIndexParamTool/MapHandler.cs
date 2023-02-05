@@ -241,7 +241,7 @@ namespace TriggerIndexParamTool
 
                 if (split.Length < 2)
                 {
-                    Logger.Warn("ScriptType [" + scriptTypeKey + "] key " + key + " contains less than two comma-separated values.");
+                    Logger.Warn("ScriptType [" + scriptTypeKey + "] Action #" + key + " contains less than two comma-separated values.");
                     continue;
                 }
 
@@ -250,7 +250,7 @@ namespace TriggerIndexParamTool
 
                 if (actionID == -1 || actionParameter == -1)
                 {
-                    Logger.Warn("ScriptType [" + scriptTypeKey + "] key " + key + " contains invalid action ID or parameter.");
+                    Logger.Warn("ScriptType [" + scriptTypeKey + "] Action #" + key + " contains invalid action ID or parameter.");
                     continue;
                 }
 
@@ -278,7 +278,7 @@ namespace TriggerIndexParamTool
                         currentActionParameter += rule.Increment;
                         map.SetKey(scriptTypeKey, key, actionID + "," + currentActionParameter);
                         actionChanged = true;
-                        Logger.Info("ScriptType [" + scriptTypeKey + "] line " + key + " parameter changed from " + originalParameter + " to " + currentActionParameter + ".");
+                        Logger.Info("ScriptType [" + scriptTypeKey + "] Action #" + key + " parameter changed from " + originalParameter + " to " + currentActionParameter + ".");
                     }
                 }
             }
@@ -296,7 +296,7 @@ namespace TriggerIndexParamTool
                         currentActionParameter += rule.Increment;
                         map.SetKey(scriptTypeKey, key, actionID + "," + GetBuildingTypeIndex(currentActionParameter, flag));
                         actionChanged = true;
-                        Logger.Info("ScriptType [" + scriptTypeKey + "] line " + key + " parameter changed from " + originalParameter + " to " + currentActionParameter + ".");
+                        Logger.Info("ScriptType [" + scriptTypeKey + "] Action #" + key + " parameter changed from " + originalParameter + " to " + currentActionParameter + ".");
                     }
                 }
             }
